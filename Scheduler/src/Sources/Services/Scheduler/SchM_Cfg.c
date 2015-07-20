@@ -3,7 +3,7 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %template.c%
+* C Source:         %SchM_Cfg.c%
 * Instance:         RPL_1
 * %version:         2 %
 * %created_by:      uid02495 %
@@ -48,12 +48,12 @@
 const SchTaskTableType SchTaskTableConfig [] = 
 {
   /*Offset,            Mask,       TaskID, Function Pointer */
-	{ 0,       MASK_3P125MS, TASK_3P125MS, &SchM_3P125MS_Task,	},
-	{ 1,       MASK_6P25MS,  TASK_6P25MS,  &SchM_6P25MS_Task	},
-	{ 2,       MASK_12P5MS,  TASK_12P5MS,  &SchM_12P5MS_Task	},
-	{ 3,       MASK_25MS,    TASK_25MS,    &SchM_25MS_Task		},
-	{ 5,       MASK_50MS,    TASK_50MS,    &SchM_50MS_Task		},
-	{ 6,       MASK_100MS,   TASK_100MS,   &SchM_100MS_Task		},
+	{ 0,         MASK_2P5MS,   TASK_2P5MS, &SchM_2P5MS_Task	},
+	{ 1,           MASK_5Ms,     TASK_5MS, &SchM_5Ms_Task  	},
+	{ 2,          MASK_10MS,    TASK_10MS, &SchM_10Ms_Task 	},
+	{ 3,          MASK_20MS,    TASK_20MS, &SchM_20Ms_Task	},
+	{ 5,          MASK_40MS,    TASK_40MS, &SchM_40MS_Task	},
+	{ 6,          MASK_80MS,    TASK_80MS, &SchM_80MS_Task	},
 };
 
 const SchConfigType SchConfig =

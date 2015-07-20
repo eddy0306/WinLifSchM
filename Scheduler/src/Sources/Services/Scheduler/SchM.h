@@ -23,8 +23,8 @@
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
-#ifndef TEMPLATE1_H                               /* To avoid double inclusion */
-#define TEMPLATE1_H
+#ifndef SCHM_H                               /* To avoid double inclusion */
+#define SCHM_H
 
 /* Includes */
 /* -------- */

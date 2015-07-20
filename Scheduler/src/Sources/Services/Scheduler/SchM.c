@@ -3,7 +3,7 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %template.c%
+* C Source:         %SchM.c%
 * Instance:         RPL_1
 * %version:         2 %
 * %created_by:      uid02495 %
@@ -174,7 +174,7 @@ void SchM_OsTick(void)
 		}
 		else
 		{
-			//Do nothing
+			/**************Do nothing*********************/
 		}
 	}
 }
@@ -197,16 +197,14 @@ void SchM_Background(void)
 		{
 			if( SchM_TaskControlPtr[lub_counter_task].SchTaskState == TASK_STATE_READY )
 			{
-				//SchM_Control.SchStatus = SCH_RUNNING;
 				SchM_TaskControlPtr[lub_counter_task].SchTaskState = TASK_STATE_RUNNING;
 				SchM_TaskControlPtr[lub_counter_task].TaskFunctionControlPtr();
-				//SchM_Control.SchStatus = SCH_INIT;
 				SchM_TaskControlPtr[lub_counter_task].SchTaskState = TASK_STATE_SUSPENDED;
 				
 			}
 			else
 			{
-				//Do nothing
+				/**************Do nothing*********************/
 			}
 		}
 	}
