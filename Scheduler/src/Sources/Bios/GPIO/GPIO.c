@@ -5,7 +5,7 @@
 /*============================================================================*
 * C Source:         %WindowLifter.c%
 * Instance:         RPL_1
-* %version:         2 %
+* %version:         3 %
 * %created_by:      Edgar Mosqueda Cardenas %
 * %date_created:    Thu July 16  14:38:03 2015 %
 *=============================================================================*/
@@ -13,7 +13,7 @@
 /*============================================================================*/
 /* FUNCTION COMMENT :It have added more leds as outputs and buttons as inputs.*/	
 /*                   it have to start all variables that it have to use the   */
-/*		     app						      */
+/*		    		 app                         						      */
 /*                                                                            */
 /*============================================================================*/
 /*                               OBJECT HISTORY                               */
@@ -23,6 +23,10 @@
 /*  1.0      | 16/07/2015  |                               | Edgar Mosqueda   */
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
+/*  1.1      | 20/07/2015  |                               | Edgar Mosqueda   */
+/* It is implemented by programming layers                                    */
+/*============================================================================*/
+
 
 
 /** Core modules */
@@ -71,14 +75,17 @@
 /* Inline functions */
 /* ---------------- */
 /**************************************************************
- *  Name                 : Task_1ms	
- *  Description          : This function controls all flows program.
- *  Parameters           :  void
- *  Return               :	void
- *  Critical/explanation :    YES
+ *  Name                 : GPIO_Init_channel	
+ *  Description          : This function enable the follow 
+ *                         features: output buffer, input buffer, 
+ *                         open drain and push-pull 
+ *  Parameters           : Void
+ *  Return               : T_UBYTE channel, T_UBYTE input_output, 
+ *                         T_UBYTE Open_drain
+ *  Critical/explanation : YES
  **************************************************************/
  
-void vfnGPIO_Init_channel(uint8_t channel, uint8_t input_output, uint8_t Open_drain)
+void GPIO_Init_channel(T_UBYTE channel, T_UBYTE input_output, T_UBYTE Open_drain)
 {
     if (input_output == GPIO_OUTPUT)
     {
@@ -104,88 +111,34 @@ void vfnGPIO_Init_channel(uint8_t channel, uint8_t input_output, uint8_t Open_dr
 /* Inline functions */
 /* ---------------- */
 /**************************************************************
- *  Name                 : Task_1ms	
- *  Description          : This function controls all flows program.
- *  Parameters           :  void
- *  Return               :	void
- *  Critical/explanation :    YES
+ *  Name                 : GPIO_Output	
+ *  Description          : This function send a logic value
+ *  Parameters           : Void
+ *  Return               : T_UBYTE channel, T_UBYTE logical_value
+ *  Critical/explanation : YES
  **************************************************************/
  
-void vfnGPIO_Output(uint8_t channel, uint8_t logical_value)
+void GPIO_Output(T_UBYTE channel, T_UBYTE logical_value)
 {
     SIU.GPDO[channel].B.PDO  = logical_value;  		/* Drive the logical output value to the pin */
 
 }
 
-void vfnGPIO_Input(uint8_t channel, uint8_t logical_value)
+/* Inline functions */
+/* ---------------- */
+/**************************************************************
+ *  Name                 : GPIO_Input	
+ *  Description          : This function take a logic value
+ *  Parameters           : Void
+ *  Return               : T_UBYTE channel, T_UBYTE logical_value
+ *  Critical/explanation : YES
+ **************************************************************/
+
+void GPIO_Input(T_UBYTE channel, T_UBYTE logical_value)
 {
     SIU.GPDI[channel].B.PDI  = logical_value;  		/* Drive the logical input value to the pin */
 
 }
-
-
-/* Inline functions */
-/* ---------------- */
-/**************************************************************
- *  Name                 : Task_1ms	
- *  Description          : This function controls all flows program.
- *  Parameters           :  void
- *  Return               :	void
- *  Critical/explanation :    YES
- **************************************************************/
- 
-void vfnGPIO_LED_Init(void)
-{	
-	/* Data Port C initialization */
-	vfnGPIO_Init_channel(LED1,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);
-	vfnGPIO_Output (LED1, 1);
-	vfnGPIO_Init_channel(LED2,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);  
-	vfnGPIO_Output (LED2, 1);
-	vfnGPIO_Init_channel(LED3,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);  
-	vfnGPIO_Output (LED3, 1);
-	vfnGPIO_Init_channel(LED4,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);  
-	vfnGPIO_Output (LED4, 1);
-	vfnGPIO_Init_channel(LED5,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);  
-	vfnGPIO_Output (LED5, 1);
-	vfnGPIO_Init_channel(LED6,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE); 
-	vfnGPIO_Output (LED6, 1);
-	vfnGPIO_Init_channel(LED7,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);  
-	vfnGPIO_Output (LED7, 1);
-	vfnGPIO_Init_channel(LED8,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE); 
-	vfnGPIO_Output (LED8, 1);
-	vfnGPIO_Init_channel(LED9,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE); 
-	vfnGPIO_Output (LED9, 1);
-	vfnGPIO_Init_channel(LED10,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);  
-	vfnGPIO_Output (LED10, 1);
-	vfnGPIO_Init_channel(LED_OPEN,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);
-	vfnGPIO_Output (LED_OPEN, 1);
-	vfnGPIO_Init_channel(LED_CLOSED,GPIO_OUTPUT,GPIO_OPEN_DRAIN_DISABLE);
-	vfnGPIO_Output (LED_CLOSED, 1);
-	
-}
-
-/* Inline functions */
-/* ---------------- */
-/**************************************************************
- *  Name                 : Task_1ms	
- *  Description          : This function controls all flows program.
- *  Parameters           :  void
- *  Return               :	void
- *  Critical/explanation :    YES
- **************************************************************/
- 
-
-void vfnGPIO_PUSH_Init(void)
-{
-	vfnGPIO_Init_channel(OPEN_PUSH,GPIO_INPUT,GPIO_OPEN_DRAIN_ENABLE);
-	vfnGPIO_Input(OPEN_PUSH, 1);
-	vfnGPIO_Init_channel(CLOSED_PUSH,GPIO_INPUT,GPIO_OPEN_DRAIN_ENABLE);
-	vfnGPIO_Input(CLOSED_PUSH, 1);
-	vfnGPIO_Init_channel(PINCH_PUSH,GPIO_INPUT,GPIO_OPEN_DRAIN_ENABLE);
-	vfnGPIO_Input(PINCH_PUSH, 1);
-	
-}
-
 
 /* Private functions */
 /* ----------------- */
