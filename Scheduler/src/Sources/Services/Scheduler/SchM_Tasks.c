@@ -106,9 +106,8 @@
 
 void SchM_2P5MS_Task(void)
 {
-	Task_1ms();
-	
-	Task_2P5ms();
+	Check_Button_OK_2P5ms();
+	Button_Management_1ms();
 }
 
 
@@ -160,8 +159,7 @@ void SchM_20Ms_Task(void)
  **************************************************************/
 void SchM_40MS_Task(void)
 {
-	//transisiones entre leds
-	Task_100ms_Machine();	
+	Machine_Call_100ms();	
 }
 /* Exported functions */
 /* ------------------ */
