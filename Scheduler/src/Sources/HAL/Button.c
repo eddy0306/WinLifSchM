@@ -6,8 +6,8 @@
 * C Source:         %Button.c%
 * Instance:         RPL_1
 * %version:         2 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jan  9 14:38:03 2004 %
+* %created_by:      Mario Alberto Rivera González %
+* %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : C source template file                                       */
 /*============================================================================*/
@@ -19,7 +19,7 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  |                               | Mr. Template     */
+/*  1.0      | 17/07/2015  | 				               | Mario Rivera     */
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
@@ -60,6 +60,15 @@ T_UBYTE Button_Pressed( T_UBYTE Channel );
 
 
 /* LONG and STRUCTURE RAM variables */
+enum re_states
+{
+	MANUAL,
+	AUTOMATIC,
+	OPEN,
+	CLOSED,
+	STANDBY,
+	PINCH
+};
 
 
 /*======================================================*/ 
@@ -136,3 +145,27 @@ void Button_Init( Button *lp_button, T_UBYTE lub_channel )
  		return NON_PRESSED;
  }
 
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	Antti_Pinch
+ *  Description          :	Checks if there's a button pressed. Return PRESSED or NON-PRESSED
+ *  Parameters           :  T_UBYTE lub_channel
+ *  Return               :	T_UBYTE
+ *  Critical/explanation :  YES
+ **************************************************************/
+ 
+ T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction )
+ {
+ 	if( lp_button.PushButton(lp_button.channel) )
+	{
+		if( lub_direction == CLOSED )
+		{
+			return PRESSED;
+		}
+		else
+			return NON_PRESSED;
+	}
+	else
+		return NON_PRESSED;
+ }

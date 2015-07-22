@@ -6,8 +6,8 @@
 * C Include:        %Button.h%
 * Instance:         RPL_1
 * %version:         1 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jul 17 15:34:01 2015 %
+* %created_by:      Mario Alberto Rivera González %
+* %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : Header file template                                         */
 /*============================================================================*/
@@ -19,7 +19,7 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | 17/07/2015  | SAR/SIF/SCN_xxx               | Mario Rivera     */
+/*  1.0      | 17/07/2015  | 				               | Mario Rivera     */
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
@@ -84,6 +84,7 @@ typedef struct
 
 /* Functions prototypes */
 extern void Button_Init( Button *b, T_UBYTE Channel );
+extern T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction );
 
 /* Functions macros */
 

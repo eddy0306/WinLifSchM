@@ -6,8 +6,8 @@
 * C Include:        %LED.h%
 * Instance:         RPL_1
 * %version:         1 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jul 17 15:34:01 2015 %
+* %created_by:      Mario Alberto Rivera González %
+* %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : Header file template                                         */
 /*============================================================================*/
@@ -21,6 +21,7 @@
 /*----------------------------------------------------------------------------*/
 /*  1.0      | 17/07/2015  |                               | Mario Rivera     */
 /* Integration programming layer. Driver to use Led's in any program.         */
+/*----------------------------------------------------------------------------*/
 /*============================================================================*/
 
 #ifndef LED_H                               /* To avoid double inclusion */
