@@ -22,6 +22,11 @@
 /*----------------------------------------------------------------------------*/
 /*  1.0      | 03/07/2015  |                               | Mario Rivera     */
 /* Integration under Continuus CM                                             */
+/*----------------------------------------------------------------------------*/
+/*  2.0      | 22/07/2015  |                               | Mario Rivera     */
+/*  Fix managment button  when occurs transition automatic to manual.         */
+/*  Fix bugs when turn on led indicator close when te window is totally close.*/
+/*  Fix bugs when turn on led indicator open when the window is totally open. */
 /*============================================================================*/
 
 /* Includes */
@@ -38,8 +43,8 @@
 /* ---------------------------------------------------- */
 /* Functions macros */
 
-void Show_Leds( void );
-void machine( void );
+void Window_movement( void );
+void States_machine_WindowLifter( void );
 void Set_Direction( void );
 void Set_Mode( void );
 
@@ -100,43 +105,51 @@ enum re_states
 /* Inline functions */
 /* ---------------- */
 /**************************************************************
- *  Name                 : Task_1ms	
- *  Description          : This function controls all flows program.
+ *  Name                 : Button_Management_1ms	
+ *  Description          : This function controlls button. Check if
+ *						   there's any push button and combination button.
  *  Parameters           :  void
  *  Return               :	void
  *  Critical/explanation :    YES
  **************************************************************/
  
- void Task_1ms(void)
+ void Button_Management_1ms(void)
 {
 	if( rub_option_M_A == PINCH ){}
 	else if( rub_counter_Button_OK )
 	{
-		if( B_OPEN.PushButton(B_OPEN.channel) ) 
+		/*Check if there's buttons combination */
+		if( B_CLOSE.PushButton( B_CLOSE.channel) && B_OPEN.PushButton(B_OPEN.channel) )
 		{
-			ruw_counter_M_A++;
+			ruw_counter_M_A = RESET_COUNTER;
+		}
+		else if( B_OPEN.PushButton(B_OPEN.channel)) 
+		{
+			/*Show leds indicators*/
+			if( rub_start < LED10 )
+			{
+				Led_ON(LED_OPEN);
+				Led_OFF(LED_CLOSED);	
+			}
+			ruw_counter_M_A++;/*counter to check mode(Automatic or Manual)*/
 			rub_Option_Direction = OPEN;
-			Led_ON(LED_OPEN);
-			Led_OFF(LED_CLOSED);
 		}
 		else if( B_CLOSE.PushButton( B_CLOSE.channel) )
 		{
-			ruw_counter_M_A++;
-			rub_Option_Direction = CLOSED;
-			Led_ON(LED_CLOSED);
-			Led_OFF(LED_OPEN);
-		}
-		else if( B_PINCH.PushButton(B_PINCH.channel) )
-		{
-			if( rub_Option_Direction == CLOSED )
+			if( rub_start > LED1 )
 			{
-				ruw_counter_M_A = RESET_COUNTER;
-				ruw_counter_Pinch = RESET_COUNTER;
-				rub_option_M_A = PINCH;
-				rub_Option_Direction = OPEN;
-				Led_OFF(LED_CLOSED);
-				Led_ON(LED_OPEN);
+				Led_ON(LED_CLOSED);
+				Led_OFF(LED_OPEN);	
 			}
+			ruw_counter_M_A++;/*counter to check mode(Automatic or Manual)*/
+			rub_Option_Direction = CLOSED;
+		}
+		else if( Anti_Pinch(B_PINCH,rub_Option_Direction)  == ANTI_PINCH_OK )
+		{
+			ruw_counter_M_A = RESET_COUNTER;/*Reset counter mode*/
+			ruw_counter_Pinch = RESET_COUNTER;/*Reset counter anti-pinch*/
+			rub_option_M_A = PINCH;/*Set state Pinch*/
+			rub_Option_Direction = OPEN;/*Set movement direction*/
 		}
 		else
 			ruw_counter_M_A = RESET_COUNTER;
@@ -147,55 +160,56 @@ enum re_states
 /* Inline functions */
 /* ---------------- */
 /**************************************************************
- *  Name                 : Task_10ms	
+ *  Name                 : Check_Button_OK_2P5ms	
  *  Description          : This function is call to check
- 						   if was pressed a correct button.
+ *						   if any button is pressed and keeps pressed.
  *  Parameters           :  void
  *  Return               :	void
  *  Critical/explanation :  YES
  **************************************************************/
 
-void Task_2P5ms(void)
-{
-	static T_UBYTE lub_Counter = 0;
-    if( lub_Counter == 4 )
+void Check_Button_OK_2P5ms(void)
+{   
+    static T_UBYTE lub_Counter = 0;
+	if( B_OPEN.PushButton(B_OPEN.channel) || 
+    		B_CLOSE.PushButton( B_CLOSE.channel) || 
+    		B_PINCH.PushButton( B_PINCH.channel) )
     {
-    	rub_counter_Button_OK = 1;
-    	lub_Counter = 0;	
-    }
-    else
-    {
-    	if( B_OPEN.PushButton(B_OPEN.channel) || B_CLOSE.PushButton( B_CLOSE.channel) || B_PINCH.PushButton( B_PINCH.channel) )
-    	{
     		lub_Counter++;
-    	}
-		else
-		{
-			rub_counter_Button_OK = 0;
-			lub_Counter = 0;
-		}	
+    		if( lub_Counter == 4 )
+    		{
+    			rub_counter_Button_OK = 1;
+    		}
+    		else
+    		{
+		   /*Do nothing*/
+    		}
     }
+	else
+	{
+		rub_counter_Button_OK = 0;
+		lub_Counter = 0;
+	}
 }
 
 /* Inline functions */
 /* ---------------- */
 /**************************************************************
- *  Name                 : Task_10ms	
- *  Description          : This function is call when I need to know
- 						   if was pressed a correct button.
+ *  Name                 : Machine_Call_100ms	
+ *  Description          : This function call windowLifter machine
+ *						   each 400ms.
  *  Parameters           :  void
  *  Return               :	void
  *  Critical/explanation :  YES
  **************************************************************/
-void Task_100ms_Machine(void )
+void Machine_Call_100ms(void )
 {
 	static T_UBYTE lub_Counter = RESET_COUNTER;
-    
     lub_Counter++;
     
     if( lub_Counter == 10 )
     {
-    	machine();
+    	States_machine_WindowLifter();
     	lub_Counter = RESET_COUNTER;	
     }
 }
@@ -209,7 +223,7 @@ void Task_100ms_Machine(void )
  *  Return               :	void
  *  Critical/explanation : YES
  **************************************************************/
-void Show_Leds(void)
+void Window_movement(void)
 {
 	if( rub_Option_Direction == OPEN )
 			Led_OFF( rub_start );
@@ -218,35 +232,39 @@ void Show_Leds(void)
 }
 
 /* Inline functions */
+
 /* ---------------- */
 /**************************************************************
- *  Name                 : machine	
- *  Description          : This function controls the mode that 
- 						   the windows will move, Automatic, Manual
- 						   Anti-Pinch or do not do anything(StandBy).
+ *  Name                 : States_machine_WindowLifter	
+ *  Description          : Check states and do actios for each state.
  *  Parameters           :  void
  *  Return               :	void
  *  Critical/explanation :  YES
  **************************************************************/
-void machine( void )
+void States_machine_WindowLifter( void )
 {
 	switch( rub_option_M_A )
 	{
-		case MANUAL:
-			Show_Leds();
-			if( rub_counter_Button_OK )
-				Set_Direction();
-			else
-				rub_option_M_A = STANDBY;
+		case STANDBY:
+			Led_OFF(LED_CLOSED);
+			Led_OFF(LED_OPEN);
 		break;
 		case AUTOMATIC:
-			Show_Leds();
-			Set_Direction();
+			Window_movement();
+			Set_Direction();//Check wich movement is(close or open)
 		break;
-		case STANDBY:
+		case MANUAL:
+			Window_movement();
+			if( rub_counter_Button_OK )/*Button pressed is ok*/
+				Set_Direction();
+			else
+			{
+				rub_option_M_A = STANDBY;
+				ruw_counter_M_A = RESET_COUNTER;
+			}
 		break;
 		case PINCH:
-			Show_Leds();
+			Window_movement();
 			Set_Direction();
 			if( ruw_counter_Pinch >= _5000Mili )
 				rub_option_M_A = STANDBY;	
@@ -264,32 +282,33 @@ void machine( void )
  						   and sets direction.
  *  Parameters           :  void
  *  Return               :	void
- *  Critical/explanation :    [yes / No]
+ *  Critical/explanation :  YES
  **************************************************************/
 void Set_Direction( void )
 {
-
 	if( rub_Option_Direction == OPEN )
 	{
 		if( rub_start < LED10 )
 				rub_start++;
-			else if( rub_start == LED10 )
-			{
-				rub_start = LED10;
-				Led_OFF(LED_CLOSED);
-				Led_OFF(LED_OPEN);
-			}
+		else if( rub_start == LED10 )
+		{
+			//rub_Option_Direction = STANDBY;
+			rub_start = LED10;
+			Led_OFF(LED_CLOSED);
+			Led_OFF(LED_OPEN);
+		}
 	}
 	else if( rub_Option_Direction == CLOSED )
 	{
 		if( rub_start > LED1)
 				rub_start--;
-			else if( rub_start == LED1 )
-			{	
-				rub_start = LED1;
-				Led_OFF(LED_CLOSED);
-				Led_OFF(LED_OPEN);
-			}
+		else if( rub_start == LED1 )
+		{	
+			//rub_Option_Direction = STANDBY;
+			rub_start = LED1;
+			Led_OFF(LED_CLOSED);
+			Led_OFF(LED_OPEN);
+		}
 	}
 }
 
@@ -314,9 +333,9 @@ void Set_Mode( void )
 		else if( ruw_counter_M_A >= _500Mili )
 		{
 			rub_option_M_A = MANUAL;	
-			Led_OFF(LED_CLOSED);
-			Led_OFF(LED_OPEN);
 		}
+		else 
+			rub_option_M_A = STANDBY;
 	}
 }
 
@@ -325,6 +344,7 @@ void Set_Mode( void )
 /**************************************************************
  *  Name                 : InitWindowLifter	
  *  Description          : This functions is called by the main.c
+ *						   to initialize windowlifter
  *  Parameters           :  void
  *  Return               :	void
  *  Critical/explanation :  YES
@@ -352,6 +372,7 @@ void InitWindowLifter(void)//SchM_Background
 	
 	rub_start = LED1;
 	rub_option_M_A = STANDBY;
+	rub_Option_Direction = CLOSED;
 	rub_counter_Button_OK = RESET_COUNTER;
 	ruw_counter_M_A = RESET_COUNTER;
 	Led_OFF(LED_CLOSED);

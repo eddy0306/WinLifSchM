@@ -21,6 +21,10 @@
 /*----------------------------------------------------------------------------*/
 /*  1.0      | 30/06/2015  | SAR/SIF/SCN_xxx               | Mario Rivera     */
 /* Integration under Continuus CM                                             */
+/*----------------------------------------------------------------------------*/
+/*  2.0      | 22/07/2015  |                               | Mario Rivera     */
+/*  Rename functions: Button_Management_1ms, Check_Button_OK_2P5ms and        */
+/*  Machine_Call_100ms										                  */
 /*============================================================================*/
 
 #ifndef _WINDOWLIFTER_H                               /* To avoid double inclusion */
@@ -41,6 +45,7 @@
 #define _500Mili  			500
 #define _10Mili 			10
 #define RESET_COUNTER		0
+#define ANTI_PINCH_OK       1
 
 /*==================================================*/ 
 /* Declaration of exported constants                */
@@ -76,9 +81,9 @@
 
 /* Functions prototypes */
 extern void InitWindowLifter(void);
-extern void Task_1ms( void );
-extern void Task_2P5ms( void );
-extern void Task_100ms_Machine( void );
+extern void Button_Management_1ms( void );
+extern void Check_Button_OK_2P5ms( void );
+extern void Machine_Call_100ms( void );
 
 /* Functions macros */
 
@@ -86,4 +91,4 @@ extern void Task_100ms_Machine( void );
 /* Exported defines */
 
 
-#endif /* _DUMMY_H */
+#endif /* _WINDOWLIFTER_H */
