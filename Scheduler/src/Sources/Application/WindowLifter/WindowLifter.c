@@ -27,6 +27,9 @@
 /*  Fix managment button  when occurs transition automatic to manual.         */
 /*  Fix bugs when turn on led indicator close when te window is totally close.*/
 /*  Fix bugs when turn on led indicator open when the window is totally open. */
+/*  3.0      | 24/07/2015  |                               | Mario Rivera     */
+/*  Fix managment button  combination. 								          */
+/*  It has been implemented programming layer in window to make it independent.*/
 /*============================================================================*/
 
 /* Includes */
@@ -35,15 +38,14 @@
 /** Own headers */
 #include "WindowLifter.h"
 #include "typedefs.h"
-#include "LED.h"
+#include "Window.h"
 #include "Button.h"
+#include "Anti-Pinch.h"
 
 
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
 /* Functions macros */
-
-void Window_movement( void );
 void States_machine_WindowLifter( void );
 void Set_Direction( void );
 void Set_Mode( void );
@@ -79,12 +81,11 @@ Button B_OPEN,B_CLOSE,B_PINCH;
 
 enum re_states
 {
-	MANUAL,
-	AUTOMATIC,
-	OPEN,
-	CLOSED,
-	STANDBY,
-	PINCH
+	MANUAL = 0,
+	AUTOMATIC = 1,
+	STANDBY = 2,
+	PINCH = 3,
+	BLOCK = 4
 };
 
 /*======================================================*/ 
@@ -123,28 +124,19 @@ enum re_states
 		{
 			ruw_counter_M_A = RESET_COUNTER;
 		}
-		else if( B_OPEN.PushButton(B_OPEN.channel)) 
+		else if( B_OPEN.PushButton(B_OPEN.channel) ) 
 		{
-			/*Show leds indicators*/
-			if( rub_start < LED10 )
-			{
-				Led_ON(LED_OPEN);
-				Led_OFF(LED_CLOSED);	
-			}
+			Indicator_Open( rub_start );
 			ruw_counter_M_A++;/*counter to check mode(Automatic or Manual)*/
 			rub_Option_Direction = OPEN;
 		}
-		else if( B_CLOSE.PushButton( B_CLOSE.channel) )
+		else if( B_CLOSE.PushButton( B_CLOSE.channel) && Anti_Pinch(B_PINCH,rub_Option_Direction)  != ANTI_PINCH_OK )
 		{
-			if( rub_start > LED1 )
-			{
-				Led_ON(LED_CLOSED);
-				Led_OFF(LED_OPEN);	
-			}
+			Indicator_Close( rub_start );
 			ruw_counter_M_A++;/*counter to check mode(Automatic or Manual)*/
 			rub_Option_Direction = CLOSED;
 		}
-		else if( Anti_Pinch(B_PINCH,rub_Option_Direction)  == ANTI_PINCH_OK )
+		else if( Anti_Pinch(B_PINCH,rub_Option_Direction )  == ANTI_PINCH_OK )
 		{
 			ruw_counter_M_A = RESET_COUNTER;/*Reset counter mode*/
 			ruw_counter_Pinch = RESET_COUNTER;/*Reset counter anti-pinch*/
@@ -154,7 +146,7 @@ enum re_states
 		else
 			ruw_counter_M_A = RESET_COUNTER;
 	}
-	Set_Mode();
+	Set_Mode();//call in tasks
 }
 
 /* Inline functions */
@@ -215,23 +207,6 @@ void Machine_Call_100ms(void )
 }
 
 /* Inline functions */
-/* ---------------- */
-/**************************************************************
- *  Name                 : Show_Leds	
- *  Description          : This function turn on or off a specific led.
- *  Parameters           :  void
- *  Return               :	void
- *  Critical/explanation : YES
- **************************************************************/
-void Window_movement(void)
-{
-	if( rub_Option_Direction == OPEN )
-			Led_OFF( rub_start );
-	else if( rub_Option_Direction == CLOSED )
-			Led_ON( rub_start );
-}
-
-/* Inline functions */
 
 /* ---------------- */
 /**************************************************************
@@ -246,28 +221,31 @@ void States_machine_WindowLifter( void )
 	switch( rub_option_M_A )
 	{
 		case STANDBY:
-			Led_OFF(LED_CLOSED);
-			Led_OFF(LED_OPEN);
+			Indicator_StandBy();
 		break;
 		case AUTOMATIC:
-			Window_movement();
+			Window_movement(rub_Option_Direction,rub_start);
 			Set_Direction();//Check wich movement is(close or open)
 		break;
 		case MANUAL:
-			Window_movement();
+			Window_movement(rub_Option_Direction,rub_start);
 			if( rub_counter_Button_OK )/*Button pressed is ok*/
 				Set_Direction();
 			else
 			{
 				rub_option_M_A = STANDBY;
 				ruw_counter_M_A = RESET_COUNTER;
+				rub_Option_Direction = STANDBY;
 			}
 		break;
 		case PINCH:
-			Window_movement();
+			//Call antiPinch functionality
+			Window_movement(rub_Option_Direction,rub_start);
 			Set_Direction();
 			if( ruw_counter_Pinch >= _5000Mili )
 				rub_option_M_A = STANDBY;	
+		break;
+		case BLOCK:
 		break;
 		default:
 		break;
@@ -284,30 +262,28 @@ void States_machine_WindowLifter( void )
  *  Return               :	void
  *  Critical/explanation :  YES
  **************************************************************/
-void Set_Direction( void )
+void Set_Direction( void )//Direction movement
 {
 	if( rub_Option_Direction == OPEN )
 	{
-		if( rub_start < LED10 )
+		if( rub_start < TOP_LEVEL )
 				rub_start++;
-		else if( rub_start == LED10 )
+		else if( rub_start == TOP_LEVEL )
 		{
-			//rub_Option_Direction = STANDBY;
-			rub_start = LED10;
-			Led_OFF(LED_CLOSED);
-			Led_OFF(LED_OPEN);
+			rub_Option_Direction = STANDBY;
+			rub_start = TOP_LEVEL;
+			Indicator_StandBy();
 		}
 	}
 	else if( rub_Option_Direction == CLOSED )
 	{
-		if( rub_start > LED1)
+		if( rub_start > LOW_LEVEL)
 				rub_start--;
-		else if( rub_start == LED1 )
+		else if( rub_start == LOW_LEVEL )
 		{	
-			//rub_Option_Direction = STANDBY;
-			rub_start = LED1;
-			Led_OFF(LED_CLOSED);
-			Led_OFF(LED_OPEN);
+			rub_Option_Direction = STANDBY;
+			rub_start = LOW_LEVEL;
+			Indicator_StandBy();
 		}
 	}
 }
@@ -351,32 +327,19 @@ void Set_Mode( void )
  **************************************************************/
 void InitWindowLifter(void)//SchM_Background
 {
-	/*Initialize LEDS*/
-	LED_Init(LED1);
-	LED_Init(LED2);
-	LED_Init(LED3);
-	LED_Init(LED4);
-	LED_Init(LED5);
-	LED_Init(LED6);
-	LED_Init(LED7);
-	LED_Init(LED8);
-	LED_Init(LED9);
-	LED_Init(LED10);
-	LED_Init(LED_CLOSED);
-	LED_Init(LED_OPEN);
+	/*Initialize window*/
+	Init_Window();
 	
 	/*Initialize Push buttons*/
 	Button_Init(&B_OPEN,OPEN_PUSH);
 	Button_Init(&B_CLOSE,CLOSED_PUSH);
 	Button_Init(&B_PINCH,PINCH_PUSH);
 	
-	rub_start = LED1;
+	rub_start = LOW_LEVEL;
 	rub_option_M_A = STANDBY;
 	rub_Option_Direction = CLOSED;
 	rub_counter_Button_OK = RESET_COUNTER;
 	ruw_counter_M_A = RESET_COUNTER;
-	Led_OFF(LED_CLOSED);
-	Led_OFF(LED_OPEN);
 }
 
 

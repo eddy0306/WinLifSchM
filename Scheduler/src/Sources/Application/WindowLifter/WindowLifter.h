@@ -24,7 +24,10 @@
 /*----------------------------------------------------------------------------*/
 /*  2.0      | 22/07/2015  |                               | Mario Rivera     */
 /*  Rename functions: Button_Management_1ms, Check_Button_OK_2P5ms and        */
-/*  Machine_Call_100ms										                  */
+/*  Machine_Call_100ms				        	              */
+/*  3.0      | 24/07/2015  |                               | Mario Rivera     */
+/*  Fix managment button  combination. 					      */
+/*  It has been implemented programming layer in window to make it independent.*/
 /*============================================================================*/
 
 #ifndef _WINDOWLIFTER_H                               /* To avoid double inclusion */
@@ -41,11 +44,13 @@
 /* Types definition */
 /* typedef */
 #define _400Mili 			400
-#define _5000Mili 			5000
-#define _500Mili  			500
-#define _10Mili 			10
+#define _5000Mili 			2500
+#define _500Mili  			200
+#define _10Mili 			4
 #define RESET_COUNTER		0
 #define ANTI_PINCH_OK       1
+#define LOW_LEVEL			34
+#define TOP_LEVEL			43
 
 /*==================================================*/ 
 /* Declaration of exported constants                */
