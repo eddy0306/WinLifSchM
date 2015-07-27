@@ -28,7 +28,7 @@
 
 /* Includes */
 /* -------- */
-
+#include "typedefs.h"
 
 /* Exported types and constants */
 /* ---------------------------- */
@@ -84,7 +84,7 @@ typedef struct
 
 /* Functions prototypes */
 extern void Button_Init( Button *b, T_UBYTE Channel );
-extern T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction );
+
 
 /* Functions macros */
 

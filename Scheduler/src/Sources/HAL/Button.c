@@ -60,15 +60,6 @@ T_UBYTE Button_Pressed( T_UBYTE Channel );
 
 
 /* LONG and STRUCTURE RAM variables */
-enum re_states
-{
-	MANUAL,
-	AUTOMATIC,
-	OPEN,
-	CLOSED,
-	STANDBY,
-	PINCH
-};
 
 
 /*======================================================*/ 
@@ -145,27 +136,3 @@ void Button_Init( Button *lp_button, T_UBYTE lub_channel )
  		return NON_PRESSED;
  }
 
-/* Exported functions */
-/* ------------------ */
-/**************************************************************
- *  Name                 :	Antti_Pinch
- *  Description          :	Checks if there's a button pressed. Return PRESSED or NON-PRESSED
- *  Parameters           :  T_UBYTE lub_channel
- *  Return               :	T_UBYTE
- *  Critical/explanation :  YES
- **************************************************************/
- 
- T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction )
- {
- 	if( lp_button.PushButton(lp_button.channel) )
-	{
-		if( lub_direction == CLOSED )
-		{
-			return PRESSED;
-		}
-		else
-			return NON_PRESSED;
-	}
-	else
-		return NON_PRESSED;
- }

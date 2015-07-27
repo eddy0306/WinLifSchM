@@ -1,53 +1,42 @@
 /*============================================================================*/
-/*                        SV C BC SOFTWARE GROUP                              */
+/*                        SV C CE SOFTWARE GROUP                              */
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %Button.h%
+* C Source:         %LED.c%
 * Instance:         RPL_1
-* %version:         1 %
+* %version:         2 %
 * %created_by:      Mario Alberto Rivera González %
 * %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
-/* DESCRIPTION : Header file template                                         */
+/* DESCRIPTION : C source template file                                       */
 /*============================================================================*/
-/* FUNCTION COMMENT : Contains only symbols which are exported to internal    */
-/* platform modules. This will not be delivered with the library.             */
+/* FUNCTION COMMENT : It contains functions generic to init leds, turn on     */
+/* and off leds.			                                                  */
 /*                                                                            */
 /*============================================================================*/
 /*                               OBJECT HISTORY                               */
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | 17/07/2015  | 				               | Mario Rivera     */
-/* Integration under Continuus CM                                             */
+/*  1.0      | 17/07/2015  |                               | Mario Rivera     */
+/* Integration programming layer. Driver to use Led's in any program.         */
 /*============================================================================*/
-
-#ifndef Button_H                               /* To avoid double inclusion */
-#define Button_H
 
 /* Includes */
 /* -------- */
+/** MCU derivative information */
+#include "MCU_derivative.h"
+#include "typedefs.h"
+#include "LED.h"
+#include "GPIO.h"
 
-
-/* Exported types and constants */
-/* ---------------------------- */
-#define OPEN_PUSH						64
-#define CLOSED_PUSH						65
-#define PINCH_PUSH						66
-
-#define PRESSED							1
-#define NON_PRESSED						0
-
-#define INPUT							0
-#define LOGICAL_VALUE_INT				1
-
-/* Types definition */
-/* typedef */
-typedef T_UBYTE(*Button_FunctionPtrType)( T_UBYTE Channel );
+/* Functions macros, constants, types and datas         */
+/* ---------------------------------------------------- */
+/* Functions macros */
 
 /*==================================================*/ 
-/* Declaration of exported constants                */
+/* Definition of constants                          */
 /*==================================================*/ 
 /* BYTE constants */
 
@@ -62,36 +51,92 @@ typedef T_UBYTE(*Button_FunctionPtrType)( T_UBYTE Channel );
 /*======================================================*/ 
 /* Definition of RAM variables                          */
 /*======================================================*/ 
-/* BYTES */
+/* BYTE RAM variables */
 
 
-/* WORDS */
+/* WORD RAM variables */
 
 
-/* LONGS and STRUCTURES */
-typedef struct
-{
-	T_UBYTE channel;
-	Button_FunctionPtrType PushButton;
-}Button;
+/* LONG and STRUCTURE RAM variables */
+
 
 /*======================================================*/ 
 /* close variable declaration sections                  */
 /*======================================================*/ 
 
-/* Exported functions prototypes and macros */
-/* ---------------------------------------- */
-
-/* Functions prototypes */
-extern void Button_Init( Button *b, T_UBYTE Channel );
-extern T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction );
-
-/* Functions macros */
+/* Private defines */
 
 
-/* Exported defines */
+/* Private functions prototypes */
+/* ---------------------------- */
 
 
-#endif
 
+/* Exported functions prototypes */
+/* ----------------------------- */
+
+/* Inline functions */
+/* ---------------- */
+/**************************************************************
+ *  Name                 : inline_func	2
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+
+
+/* Private functions */
+/* ----------------- */
+/**************************************************************
+ *  Name                 : private_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	LED_Init
+ *  Description          :	Initialitation led as output.
+ *  Parameters           :  void
+ *  Return               :	void
+ *  Critical/explanation :  YES
+ **************************************************************/
+void LED_Init( T_UBYTE lub_chanel )
+{
+	GPIO_Init_channel(lub_chanel,OUTPUT,OPEN_DRAIN_DISABLE);/*Sets the channel as output*/
+	GPIO_Output(lub_chanel, LOGICAL_VALUE_OUT);/*Sets a logical value as output*/
+}
+
+
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 : Led_ON
+ *  Description          : Put the pin(chanel) in high(Turn on). 
+ *  Parameters           : T_UBYTE lub_Led
+ *  Return               : void
+ *  Critical/explanation : NO
+ **************************************************************/
+ void Led_ON( T_UBYTE lub_Led )
+ {
+ 	HIGH(lub_Led);/*Turn on the led*/
+ }
+ 
+ /* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	Led_OFF
+ *  Description          :	Put the pin(chanel) in low(Turn off).
+ *  Parameters           :  T_UBYTE lub_Led
+ *  Return               :	void
+ *  Critical/explanation :  NO
+ **************************************************************/
+ 
+ void Led_OFF( T_UBYTE lub_Led )
+ {
+ 	LOW(lub_Led);/*Turn off the led*/
+ }
 
