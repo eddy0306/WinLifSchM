@@ -3,11 +3,11 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %SchM.c%
+* C Source:         %Window.c%
 * Instance:         RPL_1
 * %version:         2 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jan  9 14:38:03 2004 %
+* %created_by:      Mario Alberto Rivera González %
+* %date_created:    Fri Jun  24 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : C source template file                                       */
 /*============================================================================*/
@@ -19,15 +19,17 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  |                               | Mr. Template     */
-/* Integration under Continuus CM                                             */
+/*  1.0      | 24/07/2015  |                               | Mario Rivera     */
+/* Integration programming layer.                                             */
+/* Add window movement to make it independent.                                */
+/* Add standby,open and close indicators.	                                  */
 /*============================================================================*/
 
 /* Includes */
 /* -------- */
-#include    "SchM.h"
-#include    "PIT.h"
-#include    "MemAlloc.h"
+#include "Window.h"
+#include "LED.h"
+
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
 /* Functions macros */
@@ -49,15 +51,12 @@
 /* Definition of RAM variables                          */
 /*======================================================*/ 
 /* BYTE RAM variables */
-const SchConfigType *rp_SchM_Config;
 
 
 /* WORD RAM variables */
 
 
 /* LONG and STRUCTURE RAM variables */
-SchControlType SchM_Control;
-SchTaskControlType *SchM_TaskControlPtr;
 
 
 /*======================================================*/ 
@@ -84,6 +83,8 @@ SchTaskControlType *SchM_TaskControlPtr;
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
+
+
 /* Private functions */
 /* ----------------- */
 /**************************************************************
@@ -94,119 +95,104 @@ SchTaskControlType *SchM_TaskControlPtr;
  *  Critical/explanation :    [yes / No]
  **************************************************************/
 
+
 /* Exported functions */
 /* ------------------ */
 /**************************************************************
- *  Name                 :	SchM_Init
+ *  Name                 :	export_func
  *  Description          :
- *  Parameters           :  SchConfigType *SchM_Config 
+ *  Parameters           :  [Input, Output, Input / output]
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
-void SchM_Init( const SchConfigType *SchM_Config )
+void Init_Window(void)
 {
-	T_UBYTE lub_counter_task;
-	PIT_device_init();
-    PIT_channel_configure(PIT_CHANNEL_0 , SchM_OsTick);
-    rp_SchM_Config = SchM_Config;
-	SchM_TaskControlPtr = (SchTaskControlType*)MemAlloc(rp_SchM_Config->SchNumberOfTask*sizeof(SchTaskControlType));
-	for(lub_counter_task = 0; lub_counter_task < rp_SchM_Config->SchNumberOfTask; lub_counter_task++)
+	/*Initialize LED Bar*/
+	LED_Init(LED1);
+	LED_Init(LED2);
+	LED_Init(LED3);
+	LED_Init(LED4);
+	LED_Init(LED5);
+	LED_Init(LED6);
+	LED_Init(LED7);
+	LED_Init(LED8);
+	LED_Init(LED9);
+	LED_Init(LED10);
+	LED_Init(LED_CLOSED);
+	LED_Init(LED_OPEN);
+	Indicator_StandBy();
+}
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	export_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+void Window_movement( T_UBYTE lub_Direction, T_UBYTE lub_level )
+{
+	if( lub_Direction == OPEN )
+			Led_OFF( lub_level );
+	else if( lub_Direction == CLOSED )
+			Led_ON( lub_level );
+}
+
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	export_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+void Indicator_StandBy(void)
+{
+	Led_OFF(LED_CLOSED);
+	Led_OFF(LED_OPEN);	
+}
+
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	export_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+void Indicator_Close( T_UBYTE lub_level )
+{
+	if( lub_level > LED1 )
 	{
-		SchM_TaskControlPtr[lub_counter_task].SchTaskState = TASK_STATE_SUSPENDED; 
-		SchM_TaskControlPtr[lub_counter_task].TaskFunctionControlPtr = rp_SchM_Config->SchTaskTable[lub_counter_task].TaskFunctionPtr;
+		Led_ON(LED_CLOSED);
+		Led_OFF(LED_OPEN);	
 	}
-	SchM_Control.SchStatus = SCH_INIT;
-	SchM_Control.SchCounter = 0;
-}
-
-/* Exported functions */
-/* ------------------ */
-/**************************************************************
- *  Name                 :	SchM_Stop
- *  Description          :
- *  Parameters           :  void
- *  Return               :
- *  Critical/explanation :    [yes / No]
- **************************************************************/
-
-void SchM_Stop(void)
-{
-	PIT_channel_stop(PIT_CHANNEL_0);
-	SchM_Control.SchStatus = SCH_HALTED;
-}
-
-/* Exported functions */
-/* ------------------ */
-/**************************************************************
- *  Name                 :	SchM_Start
- *  Description          :
- *  Parameters           :  void
- *  Return               :
- *  Critical/explanation :    [yes / No]
- **************************************************************/
-void SchM_Start(void)
-{
-	PIT_channel_start(PIT_CHANNEL_0);
-	SchM_Control.SchStatus = SCH_RUNNING;
-	SchM_Background();
-}
-
-/* Exported functions */
-/* ------------------ */
-/**************************************************************
- *  Name                 :	SchM_OsTick
- *  Description          :
- *  Parameters           :  void
- *  Return               :
- *  Critical/explanation :    [yes / No]
- **************************************************************/
-void SchM_OsTick(void)
-{
-	T_UBYTE lub_counter_task;
-	T_UBYTE lub_maskResult;
-	SchM_Control.SchCounter++;
-	for(lub_counter_task = 0; lub_counter_task < rp_SchM_Config->SchNumberOfTask; lub_counter_task++)
+	else
 	{
-		lub_maskResult = rp_SchM_Config->SchTaskTable[lub_counter_task].SchTaskMask & SchM_Control.SchCounter;
-		if( lub_maskResult == rp_SchM_Config->SchTaskTable[lub_counter_task].SchTaskOffset )
-		{
-			SchM_TaskControlPtr[lub_counter_task].SchTaskState = TASK_STATE_READY;
-		}
+		/*Do nothing*/
+	}
+}
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	export_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+ void Indicator_Open( T_UBYTE lub_level )
+ {
+ 	if( lub_level < LED10 )
+	{
+		Led_ON(LED_OPEN);
+		Led_OFF(LED_CLOSED);	
+	}
 		else
-		{
-			/**************Do nothing*********************/
-		}
-	}
-}
-
-/* Exported functions */
-/* ------------------ */
-/**************************************************************
- *  Name                 :	SchM_Background
- *  Description          :
- *  Parameters           :  void
- *  Return               :
- *  Critical/explanation :    [yes / No]
- **************************************************************/
-void SchM_Background(void)
-{
-	T_UBYTE lub_counter_task;
-	for(;;)
 	{
-		for(lub_counter_task = 0; lub_counter_task < rp_SchM_Config->SchNumberOfTask; lub_counter_task++)
-		{
-			if( SchM_TaskControlPtr[lub_counter_task].SchTaskState == TASK_STATE_READY )
-			{
-				SchM_TaskControlPtr[lub_counter_task].SchTaskState = TASK_STATE_RUNNING;
-				SchM_TaskControlPtr[lub_counter_task].TaskFunctionControlPtr();
-				SchM_TaskControlPtr[lub_counter_task].SchTaskState = TASK_STATE_SUSPENDED;
-				
-			}
-			else
-			{
-				/**************Do nothing*********************/
-			}
-		}
+		/*Do nothing*/
 	}
-}
-
+ }

@@ -3,11 +3,11 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %SchM_Cfg.c%
+* C Source:         %Anti-Pinch.c%
 * Instance:         RPL_1
-* %version:         2 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jan  9 14:38:03 2004 %
+* %version:         1 %
+* %created_by:      Mario Alberto Rivera González %
+* %date_created:    Wend Jun  22 14:31:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : C source template file                                       */
 /*============================================================================*/
@@ -19,15 +19,13 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  |                               | Mr. Template     */
-/* Integration under Continuus CM                                             */
+/*  1.0      | 22/07/2015  |                               | Mario Rivera     */
+/* Add Anti-Pinch functionaliti.                                             */
 /*============================================================================*/
 
 /* Includes */
 /* -------- */
-#include "SchM_Cfg.h"
-#include "SchM_Tasks.h"
-
+#include "Anti-Pinch.h"
 
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
@@ -44,22 +42,10 @@
 
 /* LONG and STRUCTURE constants */
 
-
-const SchTaskTableType SchTaskTableConfig [] = 
+enum direction
 {
-  /*Offset,            Mask,       TaskID, Function Pointer */
-	{ 0,         MASK_2P5MS,   TASK_2P5MS, &SchM_2P5MS_Task	},
-	{ 1,           MASK_5Ms,     TASK_5MS, &SchM_5Ms_Task  	},
-	{ 2,          MASK_10MS,    TASK_10MS, &SchM_10Ms_Task 	},
-	{ 3,          MASK_20MS,    TASK_20MS, &SchM_20Ms_Task	},
-	{ 5,          MASK_40MS,    TASK_40MS, &SchM_40MS_Task	},
-	{ 6,          MASK_80MS,    TASK_80MS, &SchM_80MS_Task	},
-};
-
-const SchConfigType SchConfig =
-{
-	(sizeof(SchTaskTableConfig)/sizeof(SchTaskTableConfig[0])),
-	SchTaskTableConfig
+	OPEN = 5,
+	CLOSED = 6
 };
 
 /*======================================================*/ 
@@ -114,10 +100,33 @@ const SchConfigType SchConfig =
 /* Exported functions */
 /* ------------------ */
 /**************************************************************
- *  Name                 :	export_func
- *  Description          :
- *  Parameters           :  [Input, Output, Input / output]
- *  Return               :
- *  Critical/explanation :    [yes / No]
+ *  Name                 :	Antti_Pinch
+ *  Description          :	Checks if there's a button pressed. Return PRESSED or NON-PRESSED
+ *  Parameters           :  T_UBYTE lub_channel
+ *  Return               :	T_UBYTE
+ *  Critical/explanation :  YES
  **************************************************************/
-
+ 
+ T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction )
+ {
+ 	T_UBYTE lub_option_return;
+ 	if( lp_button.PushButton( lp_button.channel ) )
+	{
+		if( lub_direction == (T_UBYTE)CLOSED )
+		{
+			lub_option_return = (T_UBYTE)PRESSED;
+		}
+		else
+		{
+			lub_option_return = (T_UBYTE)NON_PRESSED;	
+		}
+	}
+	else
+	{
+		lub_option_return = (T_UBYTE)NON_PRESSED;	
+	}
+	
+	return lub_option_return;
+	
+ }
+ 

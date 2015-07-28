@@ -3,11 +3,11 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %SchM.h%
+* C Include:        %WindowLifter.h%
 * Instance:         RPL_1
 * %version:         1 %
 * %created_by:      Mario Alberto Rivera González %
-* %date_created:    Fri Feb 28 13:41:01 2003 %
+* %date_created:    Fri jun 30 13:41:01 2015 %
 *=============================================================================*/
 /* DESCRIPTION : Header file template                                         */
 /*============================================================================*/
@@ -19,24 +19,41 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  | SAR/SIF/SCN_xxx               | Mr. Template     */
+/*  1.0      | 30/06/2015  | SAR/SIF/SCN_xxx               | Mario Rivera     */
 /* Integration under Continuus CM                                             */
+/*----------------------------------------------------------------------------*/
+/*  2.0      | 22/07/2015  |                               | Mario Rivera     */
+/*  Rename functions: Button_Management_1ms, Check_Button_OK_2P5ms and        */
+/*  Machine_Call_100ms										                  */
+/*  3.0      | 24/07/2015  |                               | Mario Rivera     */
+/*  Fix managment button  combination. 								          */
+/*  It has been implemented programming layer in window to make it independent.*/
 /*============================================================================*/
 
-#ifndef SCHM_H                               /* To avoid double inclusion */
-#define SCHM_H
+#ifndef _WINDOWLIFTER_H                               /* To avoid double inclusion */
+#define _WINDOWLIFTER_H
 
 /* Includes */
+#include "typedefs.h"
 /* -------- */
-#include "SchM_types.h"
-#include "GPIO.h"
+
 
 /* Exported types and constants */
 /* ---------------------------- */
 
 /* Types definition */
 /* typedef */
-
+#define _400Mili 					400
+#define _5000Mili 					2500
+#define _500Mili  					200
+#define _10Mili 					5
+#define RESET_COUNTER				0
+#define ANTI_PINCH_OK      			1
+#define CONFIGURATION_BUTTON_OK		5
+#define BUTTON_OK					1
+#define CONFIGURATION_TRANSITION    10
+#define LOW_LEVEL					34
+#define TOP_LEVEL					43
 
 /*==================================================*/ 
 /* Declaration of exported constants                */
@@ -71,11 +88,10 @@
 /* ---------------------------------------- */
 
 /* Functions prototypes */
-extern void SchM_Init( const SchConfigType *SchM_Config );
-extern void SchM_Stop( void );
-extern void SchM_Start( void );
-extern void SchM_OsTick( void );
-extern void SchM_Background( void );
+extern void InitWindowLifter(void);
+extern void Button_Management_2P5ms( void );
+extern void Check_Button_OK_2P5ms( void );
+extern void Machine_Call_100ms( void );
 
 /* Functions macros */
 
@@ -83,7 +99,4 @@ extern void SchM_Background( void );
 /* Exported defines */
 
 
-
-#endif
-
-
+#endif /* _WINDOWLIFTER_H */

@@ -3,31 +3,32 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %SchM_Cfg.c%
+* C Source:         %LED.c%
 * Instance:         RPL_1
 * %version:         2 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jan  9 14:38:03 2004 %
+* %created_by:      Mario Alberto Rivera González %
+* %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : C source template file                                       */
 /*============================================================================*/
-/* FUNCTION COMMENT : This file describes the C source template according to  */
-/* the new software platform                                                  */
+/* FUNCTION COMMENT : It contains functions generic to init leds, turn on     */
+/* and off leds.			                                                  */
 /*                                                                            */
 /*============================================================================*/
 /*                               OBJECT HISTORY                               */
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  |                               | Mr. Template     */
-/* Integration under Continuus CM                                             */
+/*  1.0      | 17/07/2015  |                               | Mario Rivera     */
+/* Integration programming layer. Driver to use Led's in any program.         */
 /*============================================================================*/
 
 /* Includes */
 /* -------- */
-#include "SchM_Cfg.h"
-#include "SchM_Tasks.h"
-
+/** MCU derivative information */
+#include "MCU_derivative.h"
+#include "LED.h"
+#include "GPIO.h"
 
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
@@ -45,22 +46,6 @@
 /* LONG and STRUCTURE constants */
 
 
-const SchTaskTableType SchTaskTableConfig [] = 
-{
-  /*Offset,            Mask,       TaskID, Function Pointer */
-	{ 0,         MASK_2P5MS,   TASK_2P5MS, &SchM_2P5MS_Task	},
-	{ 1,           MASK_5Ms,     TASK_5MS, &SchM_5Ms_Task  	},
-	{ 2,          MASK_10MS,    TASK_10MS, &SchM_10Ms_Task 	},
-	{ 3,          MASK_20MS,    TASK_20MS, &SchM_20Ms_Task	},
-	{ 5,          MASK_40MS,    TASK_40MS, &SchM_40MS_Task	},
-	{ 6,          MASK_80MS,    TASK_80MS, &SchM_80MS_Task	},
-};
-
-const SchConfigType SchConfig =
-{
-	(sizeof(SchTaskTableConfig)/sizeof(SchTaskTableConfig[0])),
-	SchTaskTableConfig
-};
 
 /*======================================================*/ 
 /* Definition of RAM variables                          */
@@ -109,15 +94,48 @@ const SchConfigType SchConfig =
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	LED_Init
+ *  Description          :	Initialitation led as output.
+ *  Parameters           :  void
+ *  Return               :	void
+ *  Critical/explanation :  YES
+ **************************************************************/
+void LED_Init( T_UBYTE lub_chanel )
+{
+	GPIO_Init_channel(lub_chanel,(T_UBYTE)OUTPUT,(T_UBYTE)OPEN_DRAIN_DISABLE);/*Sets the channel as output*/
+	GPIO_Output(lub_chanel, (T_UBYTE)LOGICAL_VALUE_OUT);/*Sets a logical value as output*/
+}
 
 
 /* Exported functions */
 /* ------------------ */
 /**************************************************************
- *  Name                 :	export_func
- *  Description          :
- *  Parameters           :  [Input, Output, Input / output]
- *  Return               :
- *  Critical/explanation :    [yes / No]
+ *  Name                 : Led_ON
+ *  Description          : Put the pin(chanel) in high(Turn on). 
+ *  Parameters           : T_UBYTE lub_Led
+ *  Return               : void
+ *  Critical/explanation : NO
  **************************************************************/
+ void Led_ON( T_UBYTE lub_Led )
+ {
+ 	HIGH(lub_Led);/*Turn on the led*/
+ }
+ 
+ /* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	Led_OFF
+ *  Description          :	Put the pin(chanel) in low(Turn off).
+ *  Parameters           :  T_UBYTE lub_Led
+ *  Return               :	void
+ *  Critical/explanation :  NO
+ **************************************************************/
+ 
+ void Led_OFF( T_UBYTE lub_Led )
+ {
+ 	LOW(lub_Led);/*Turn off the led*/
+ }
 

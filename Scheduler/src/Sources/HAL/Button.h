@@ -3,40 +3,48 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %SchM.h%
+* C Include:        %Button.h%
 * Instance:         RPL_1
 * %version:         1 %
-* %created_by:      Mario Alberto Rivera González %
-* %date_created:    Fri Feb 28 13:41:01 2003 %
+* %created_by:      Edgar Mosqueda Cardenas %
+* %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : Header file template                                         */
 /*============================================================================*/
-/* FUNCTION COMMENT : contains only symbols which are exported to internal    */
-/* platform modules. This will not be delivered with the library              */
+/* FUNCTION COMMENT : Contains only symbols which are exported to internal    */
+/* platform modules. This will not be delivered with the library.             */
 /*                                                                            */
 /*============================================================================*/
 /*                               OBJECT HISTORY                               */
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  | SAR/SIF/SCN_xxx               | Mr. Template     */
+/*  1.0      | 17/07/2015  | 				  | Edgar Mosqueda    */
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
-#ifndef SCHM_H                               /* To avoid double inclusion */
-#define SCHM_H
+#ifndef Button_H                               /* To avoid double inclusion */
+#define Button_H
 
 /* Includes */
 /* -------- */
-#include "SchM_types.h"
-#include "GPIO.h"
+#include "typedefs.h"
 
 /* Exported types and constants */
 /* ---------------------------- */
+#define OPEN_PUSH						64
+#define CLOSED_PUSH						65
+#define PINCH_PUSH						66
+
+#define PRESSED							1
+#define NON_PRESSED						0
+
+#define INPUT							0
+#define LOGICAL_VALUE_INT				1
 
 /* Types definition */
 /* typedef */
-
+typedef T_UBYTE(*Button_FunctionPtrType)( T_UBYTE Channel );
 
 /*==================================================*/ 
 /* Declaration of exported constants                */
@@ -61,7 +69,11 @@
 
 
 /* LONGS and STRUCTURES */
-
+typedef struct
+{
+	T_UBYTE channel;
+	Button_FunctionPtrType PushButton;
+}Button;
 
 /*======================================================*/ 
 /* close variable declaration sections                  */
@@ -71,17 +83,12 @@
 /* ---------------------------------------- */
 
 /* Functions prototypes */
-extern void SchM_Init( const SchConfigType *SchM_Config );
-extern void SchM_Stop( void );
-extern void SchM_Start( void );
-extern void SchM_OsTick( void );
-extern void SchM_Background( void );
+extern void Button_Init( Button *b, T_UBYTE Channel );
 
 /* Functions macros */
 
 
 /* Exported defines */
-
 
 
 #endif

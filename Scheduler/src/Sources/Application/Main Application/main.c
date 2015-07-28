@@ -5,6 +5,7 @@
 #include    "SchM.h"
 #include    "SchM_Cfg.h"
 #include    "MemAlloc_Cfg.h"
+#include    "WindowLifter.h"
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
@@ -56,9 +57,7 @@ int main(void)
 	initModesAndClock();
 	/* Disable Watchdog */
 	disableWatchdog();
-	MemAllocInit(&MemAllocConfig);
-	/*Initialize LEDs on TRK-MPC560xB board */
-	vfnGPIO_LED_Init();	
+	MemAllocInit(&MemAllocConfig);	
 	/*Initialize Interrupts */
 	INTC_InitINTCInterrupts();
 	/*Initialize Exception Handlers */
@@ -66,7 +65,9 @@ int main(void)
     /* Enable External Interrupts*/
     enableIrq();
 	/* Infinite loop */
-	//init del scheduler
+	/*Init Window Lifter module*/
+	InitWindowLifter();
+	/*init del scheduler*/
     SchM_Init(&SchConfig);
     SchM_Start();
 	for (;;) 

@@ -1,22 +1,37 @@
-/*******************************************************************************/
-/**
-\file       GPIO.c
-\brief      General purpose IO functions
-\author     Abraham Tezmol
-\version    1.0
-\date       31/10/2008
-*/
-/****************************************************************************************************/
+/*============================================================================*/
+/*                        SV C CE SOFTWARE GROUP                              */
+/*============================================================================*/
+/*                        OBJECT SPECIFICATION                                */
+/*============================================================================*
+* C Source:         %WindowLifter.c%
+* Instance:         RPL_1
+* %version:         3 %
+* %created_by:      Edgar Mosqueda Cardenas %
+* %date_created:    Thu July 16  14:38:03 2015 %
+*=============================================================================*/
+/* DESCRIPTION : C source template file                                       */
+/*============================================================================*/
+/* FUNCTION COMMENT :It have added more leds as outputs and buttons as inputs.*/	
+/*                   it have to start all variables that it have to use the   */
+/*		    		 app                         						      */
+/*                                                                            */
+/*============================================================================*/
+/*                               OBJECT HISTORY                               */
+/*============================================================================*/
+/*  REVISION |   DATE      |                               |      AUTHOR      */
+/*----------------------------------------------------------------------------*/
+/*  1.0      | 16/07/2015  |                               | Edgar Mosqueda   */
+/* Integration under Continuus CM                                             */
+/*============================================================================*/
+/*  1.1      | 20/07/2015  |                               | Edgar Mosqueda   */
+/* It is implemented by programming layers                                    */
+/*============================================================================*/
 
-/*****************************************************************************************************
-* Include files
-*****************************************************************************************************/
 
 /** Core modules */
 /** MCU derivative information */
 #include "MCU_derivative.h"
-/** Variable types and common definitions */
-#include "typedefs.h"
+/* Variable types and common definitions */
 
 /** Own headers */
 /* GPIO routines prototypes */ 
@@ -25,42 +40,47 @@
 /** Used modules */
 
 
-/*****************************************************************************************************
-* Definition of module wide VARIABLEs 
-*****************************************************************************************************/
-
-/*****************************************************************************************************
-* Declaration of module wide FUNCTIONs 
-*****************************************************************************************************/
-
-/*****************************************************************************************************
-* Definition of module wide MACROs / #DEFINE-CONSTANTs 
-*****************************************************************************************************/
-
-/*****************************************************************************************************
-* Declaration of module wide TYPEs 
-*****************************************************************************************************/
-
-/*****************************************************************************************************
-* Definition of module wide (CONST-) CONSTANTs 
-*****************************************************************************************************/
-
-/*****************************************************************************************************
-* Code of module wide FUNCTIONS
-*****************************************************************************************************/
+/* Functions macros, constants, types and datas         */
+/* ---------------------------------------------------- */
+/* Functions macros */
+/*==================================================*/ 
+/* Definition of constants                          */
+/*==================================================*/ 
+/* BYTE constants */
 
 
-/****************************************************************************************************/
-/**
-* \brief    Configures individual GPIO pins to either input or output functionality.  
-* \author   Abraham Tezmol
-* \param    uint8_t channel - GPIO channel to be configured
-* \param    uint8_t input_output - selection of input/output functionality (has impact on output impedance selection)
-* \param    uint8_t Open_drain - Push pull or open drain selection modes 
-* \return   void
-*/
+/* WORD constants */
 
-void vfnGPIO_Init_channel(uint8_t channel, uint8_t input_output, uint8_t Open_drain)
+
+/* LONG and STRUCTURE constants */
+
+/*======================================================*/ 
+/* close variable declaration sections                  */
+/*======================================================*/ 
+
+/* Private defines */
+
+
+/* Private functions prototypes */
+/* ---------------------------- */
+
+
+
+/* Exported functions prototypes */
+/* ----------------------------- */
+
+
+/* Inline functions */
+/* ---------------- */
+/**************************************************************
+ *  Name                 : Task_1ms	
+ *  Description          : This function controls all flows program.
+ *  Parameters           :  void
+ *  Return               :	void
+ *  Critical/explanation :    YES
+ **************************************************************/
+ 
+void GPIO_Init_channel(T_UBYTE channel, T_UBYTE input_output, T_UBYTE Open_drain)
 {
     if (input_output == GPIO_OUTPUT)
     {
@@ -83,88 +103,45 @@ void vfnGPIO_Init_channel(uint8_t channel, uint8_t input_output, uint8_t Open_dr
 
 }
 
-/****************************************************************************************************/
-/**
-* \brief    Configures individual GPIO pins to either input or output functionality.  
-* \author   Abraham Tezmol
-* \param    uint8_t channel - GPIO channel to be configured
-* \param    uint8_t input_output - selection of input/output functionality (has impact on output impedance selection)
-* \param    uint8_t Open_drain - Push pull or open drain selection modes 
-* \return   void
-*/
-void vfnGPIO_Output(uint8_t channel, uint8_t logical_value)
+/* Inline functions */
+/* ---------------- */
+/**************************************************************
+ *  Name                 : Task_1ms	
+ *  Description          : This function controls all flows program.
+ *  Parameters           :  void
+ *  Return               :	void
+ *  Critical/explanation :    YES
+ **************************************************************/
+ 
+void GPIO_Output(T_UBYTE channel, T_UBYTE logical_value)
 {
     SIU.GPDO[channel].B.PDO  = logical_value;  		/* Drive the logical output value to the pin */
 
 }
 
-
-
-/****************************************************************************************************/
-/**
-* \brief    Turn a combination of 3 LEDs with a unique blinking pattern, this funcation shall be 
-* \brief    called periodically to operate. 
-* \author   Abraham Tezmol
-* \param    void
-* \return   void
-*/
-void vfnGPIO_FlashMainLED(void)
+void GPIO_Input(T_UBYTE channel, T_UBYTE logical_value)
 {
-    static uint8_t u8Counter = 0;
-    
-    u8Counter++;
-    switch (u8Counter)
-    {
-    case  1:
-            LED_ON(LED1);
-            LED_ON(LED2);
-            break;
-    case  11:
-            LED_ON(LED3);
-            LED_ON(LED4);                     
-            break;
-    case  21:
-            LED_ON(LED2);
-            LED_ON(LED3);                     
-            break;        
-    case  3:
-            LED_OFF(LED1);
-            LED_OFF(LED2);
-            break;
-    case  13:
-            LED_OFF(LED3);
-            LED_OFF(LED4);
-            break;                          
-    case  23:
-            LED_OFF(LED2);
-            LED_OFF(LED3);
-            break;        
-	case 100:
-		u8Counter = 0;
-		break;
-    }
+    SIU.GPDI[channel].B.PDI  = logical_value;  		/* Drive the logical input value to the pin */
+
 }
+/* Private functions */
+/* ----------------- */
+/**************************************************************
+ *  Name                 : private_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
 
 
-/****************************************************************************************************/
-/**
-* \brief    Initialize GPIO port connected to LEDs on eval board
-* \author   Abraham Tezmol
-* \param    void 
-* \return   void
-*/
-void vfnGPIO_LED_Init(void)
-{
-    /* Data Port A initialization */
-	vfnGPIO_Init_channel(LED1,GPIO_OUTPUT,GPIO_OPEN_DRAIN_ENABLE);  /* PE4 --> LED1*/
-	vfnGPIO_Output (LED1, 1);
-	vfnGPIO_Init_channel(LED2,GPIO_OUTPUT,GPIO_OPEN_DRAIN_ENABLE);  /* PE5 --> LED2*/
-	vfnGPIO_Output (LED2, 1);
-	vfnGPIO_Init_channel(LED3,GPIO_OUTPUT,GPIO_OPEN_DRAIN_ENABLE);  /* PE6 --> LED3*/
-	vfnGPIO_Output (LED3, 1);
-	vfnGPIO_Init_channel(LED4,GPIO_OUTPUT,GPIO_OPEN_DRAIN_ENABLE);  /* PE7 --> LED4*/
-	vfnGPIO_Output (LED4, 1);
-	
-}
-
-/****************************************************************************************************/
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	export_func
+ *  Description          :
+ *  Parameters           :  [Input, Output, Input / output]
+ *  Return               :
+ *  Critical/explanation :    [yes / No]
+ **************************************************************/
+ 

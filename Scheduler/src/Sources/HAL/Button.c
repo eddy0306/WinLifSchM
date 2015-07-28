@@ -3,11 +3,11 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %SchM_Cfg.c%
+* C Source:         %Button.c%
 * Instance:         RPL_1
 * %version:         2 %
-* %created_by:      uid02495 %
-* %date_created:    Fri Jan  9 14:38:03 2004 %
+* %created_by:      Edgar Mosqueda Cardenas %
+* %date_created:    Monday July  29 14:38:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : C source template file                                       */
 /*============================================================================*/
@@ -19,15 +19,18 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  |                               | Mr. Template     */
+/*  1.0      | 17/07/2015  | 				   | Edgar Mosqueda */
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
 /* Includes */
-/* -------- */
-#include "SchM_Cfg.h"
-#include "SchM_Tasks.h"
+/** MCU derivative information */
+#include "MCU_derivative.h"
+#include "Button.h"
+#include "GPIO.h"
 
+
+T_UBYTE Button_Pressed( T_UBYTE Channel );
 
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
@@ -45,22 +48,6 @@
 /* LONG and STRUCTURE constants */
 
 
-const SchTaskTableType SchTaskTableConfig [] = 
-{
-  /*Offset,            Mask,       TaskID, Function Pointer */
-	{ 0,         MASK_2P5MS,   TASK_2P5MS, &SchM_2P5MS_Task	},
-	{ 1,           MASK_5Ms,     TASK_5MS, &SchM_5Ms_Task  	},
-	{ 2,          MASK_10MS,    TASK_10MS, &SchM_10Ms_Task 	},
-	{ 3,          MASK_20MS,    TASK_20MS, &SchM_20Ms_Task	},
-	{ 5,          MASK_40MS,    TASK_40MS, &SchM_40MS_Task	},
-	{ 6,          MASK_80MS,    TASK_80MS, &SchM_80MS_Task	},
-};
-
-const SchConfigType SchConfig =
-{
-	(sizeof(SchTaskTableConfig)/sizeof(SchTaskTableConfig[0])),
-	SchTaskTableConfig
-};
 
 /*======================================================*/ 
 /* Definition of RAM variables                          */
@@ -111,13 +98,45 @@ const SchConfigType SchConfig =
  **************************************************************/
 
 
+
 /* Exported functions */
 /* ------------------ */
 /**************************************************************
- *  Name                 :	export_func
- *  Description          :
- *  Parameters           :  [Input, Output, Input / output]
- *  Return               :
- *  Critical/explanation :    [yes / No]
+ *  Name                 :	Button_Init
+ *  Description          :	This function init chanel and button as output
+ *  Parameters           :  Button *lp_button, T_UBYTE lub_channel
+ *  Return               :	void
+ *  Critical/explanation :  YES
  **************************************************************/
+void Button_Init( Button *lp_button, T_UBYTE lub_channel )
+{
+	lp_button->channel = lub_channel;
+	lp_button->PushButton = &Button_Pressed;
+	GPIO_Init_channel(lp_button->channel,(T_UBYTE)INPUT,(T_UBYTE)GPIO_OPEN_DRAIN_ENABLE);
+	GPIO_Input(lp_button->channel, (T_UBYTE)LOGICAL_VALUE_INT);
+}
 
+
+/* Exported functions */
+/* ------------------ */
+/**************************************************************
+ *  Name                 :	Button_Pressed
+ *  Description          :	Checks if there's a button pressed. Return PRESSED or NON-PRESSED
+ *  Parameters           :  T_UBYTE lub_channel
+ *  Return               :	T_UBYTE
+ *  Critical/explanation :  YES
+ **************************************************************/
+ 
+ T_UBYTE Button_Pressed( T_UBYTE lub_channel )
+ {
+ 	T_UBYTE lub_return_option;
+ 	if( PULL_DOWN( lub_channel ) )
+ 	{
+ 		lub_return_option = (T_UBYTE)PRESSED;	
+ 	}
+ 	else
+ 	{
+ 		lub_return_option = (T_UBYTE)NON_PRESSED;	
+ 	}
+ 	return lub_return_option;
+ }

@@ -3,11 +3,11 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %SchM.h%
+* C Include:        %Anti-Pinch.h%
 * Instance:         RPL_1
 * %version:         1 %
 * %created_by:      Mario Alberto Rivera González %
-* %date_created:    Fri Feb 28 13:41:01 2003 %
+* %date_created:    Wend Jun  22 14:31:03 2015 %
 *=============================================================================*/
 /* DESCRIPTION : Header file template                                         */
 /*============================================================================*/
@@ -19,17 +19,18 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  | SAR/SIF/SCN_xxx               | Mr. Template     */
-/* Integration under Continuus CM                                             */
+/*  1.0      | 22/07/2015  |                               | Mario Rivera     */
+/* Add Anti-Pinch functionaliti                                          */
 /*============================================================================*/
 
-#ifndef SCHM_H                               /* To avoid double inclusion */
-#define SCHM_H
+/* To avoid double inclusion */
+#ifndef ANTI_PINCH_H
+#define ANTI_PINCH_H
 
 /* Includes */
 /* -------- */
-#include "SchM_types.h"
-#include "GPIO.h"
+#include "Button.h"
+#include "typedefs.h"
 
 /* Exported types and constants */
 /* ---------------------------- */
@@ -71,17 +72,11 @@
 /* ---------------------------------------- */
 
 /* Functions prototypes */
-extern void SchM_Init( const SchConfigType *SchM_Config );
-extern void SchM_Stop( void );
-extern void SchM_Start( void );
-extern void SchM_OsTick( void );
-extern void SchM_Background( void );
-
+extern T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction );
 /* Functions macros */
 
 
 /* Exported defines */
-
 
 
 #endif

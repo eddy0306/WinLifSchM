@@ -3,7 +3,7 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %template.h%
+* C Include:        %SchM_Cfg.h%
 * Instance:         RPL_1
 * %version:         1 %
 * %created_by:      uid02495 %
@@ -23,8 +23,8 @@
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
-#ifndef TEMPLATE3_H                               /* To avoid double inclusion */
-#define TEMPLATE3_H
+#ifndef SCHM_CFG_H                               /* To avoid double inclusion */
+#define SCHM_CFG_H
 
 /* Includes */
 /* -------- */

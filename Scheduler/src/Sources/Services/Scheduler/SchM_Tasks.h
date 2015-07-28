@@ -3,7 +3,7 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %template.h%
+* C Include:        %SchM_Tasks.h%
 * Instance:         RPL_1
 * %version:         1 %
 * %created_by:      uid02495 %
@@ -23,8 +23,8 @@
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
-#ifndef TEMPLATE4_H                               /* To avoid double inclusion */
-#define TEMPLATE4_H
+#ifndef SCHM_TASKS_H                              /* To avoid double inclusion */
+#define SCHM_TASKS_H 
 
 /* Includes */
 /* -------- */
@@ -72,12 +72,12 @@
 /* ---------------------------------------- */
 
 /* Functions prototypes */
-extern void SchM_3P125MS_Task(void);
-extern void SchM_6P25MS_Task(void);
-extern void SchM_12P5MS_Task(void);
-extern void SchM_25MS_Task(void);
-extern void SchM_50MS_Task(void);
-extern void SchM_100MS_Task(void);
+extern void SchM_2P5MS_Task(void);
+extern void SchM_5Ms_Task(void);
+extern void SchM_10Ms_Task(void);
+extern void SchM_20Ms_Task(void);
+extern void SchM_40MS_Task(void);
+extern void SchM_80MS_Task(void);
 
 /* Functions macros */
 

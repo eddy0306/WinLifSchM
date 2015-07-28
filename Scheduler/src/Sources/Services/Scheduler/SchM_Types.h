@@ -3,7 +3,7 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Include:        %template.h%
+* C Include:        %SchM_Types.h%
 * Instance:         RPL_1
 * %version:         1 %
 * %created_by:      uid02495 %
@@ -23,8 +23,8 @@
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
-#ifndef TEMPLATE2_H                               /* To avoid double inclusion */
-#define TEMPLATE2_H
+#ifndef SCHM_TYPES_H                               /* To avoid double inclusion */
+#define SCHM_TYPES_H
 
 /* Includes */
 /* -------- */
@@ -46,24 +46,24 @@ typedef T_UBYTE SchTaskOffsetType;
 
 typedef enum
 {
-	MASK_3P125MS = 3,
-	MASK_6P25MS  = 7,
-	MASK_12P5MS  = 15,
-	MASK_25MS    = 31,
-	MASK_50MS    = 63,
-	MASK_100MS   = 127
+	MASK_2P5MS = 3,
+	MASK_5Ms  = 7,
+	MASK_10MS  = 15,
+	MASK_20MS    = 31,
+	MASK_40MS    = 63,
+	MASK_80MS   = 127
 }SchTaskMaskType;
 
 
 typedef enum
 {
 	TASK_BKG,
-	TASK_3P125MS,
-	TASK_6P25MS,
-	TASK_12P5MS,
-	TASK_25MS,
-	TASK_50MS,
-	TASK_100MS
+	TASK_2P5MS,
+	TASK_5MS,
+	TASK_10MS,
+	TASK_20MS,
+	TASK_40MS,
+	TASK_80MS
 }ScheTaskIDType;
 
 

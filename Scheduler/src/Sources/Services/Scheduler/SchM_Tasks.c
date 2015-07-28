@@ -3,10 +3,10 @@
 /*============================================================================*/
 /*                        OBJECT SPECIFICATION                                */
 /*============================================================================*
-* C Source:         %template.c%
+* C Source:         %SchM_Tasks.c%
 * Instance:         RPL_1
 * %version:         2 %
-* %created_by:      uid02495 %
+* %created_by:      Mario Alberto Rivera González %
 * %date_created:    Fri Jan  9 14:38:03 2004 %
 *=============================================================================*/
 /* DESCRIPTION : C source template file                                       */
@@ -19,14 +19,14 @@
 /*============================================================================*/
 /*  REVISION |   DATE      |                               |      AUTHOR      */
 /*----------------------------------------------------------------------------*/
-/*  1.0      | DD/MM/YYYY  |                               | Mr. Template     */
+/*  1.0      | 15/07/2015  |                               | Mario Rivera    */
 /* Integration under Continuus CM                                             */
 /*============================================================================*/
 
 /* Includes */
 /* -------- */
 #include "SchM_Tasks.h"
-#include "GPIO.h"
+#include "WindowLifter.h"
 
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
@@ -104,9 +104,13 @@
  *  Critical/explanation :    [yes / No]
  **************************************************************/
 
-void SchM_3P125MS_Task(void)
+void SchM_2P5MS_Task(void)
 {
-	//LED_TOGGLE(LED2);
+	/*First checks if there's an any valid button*/
+	Check_Button_OK_2P5ms();
+	/*Call the button management to check which button was pressed*/
+	/*and see what to do with the button.						  */
+	Button_Management_2P5ms();
 }
 
 
@@ -119,9 +123,9 @@ void SchM_3P125MS_Task(void)
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
-void SchM_6P25MS_Task(void)
+void SchM_5Ms_Task(void)
 {
-	//LED_TOGGLE(LED1);
+
 }
 /* Exported functions */
 /* ------------------ */
@@ -132,9 +136,8 @@ void SchM_6P25MS_Task(void)
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
-void SchM_12P5MS_Task(void)
+void SchM_10Ms_Task(void)
 {
-	LED_TOGGLE(LED4);
 }
 /* Exported functions */
 /* ------------------ */
@@ -145,9 +148,8 @@ void SchM_12P5MS_Task(void)
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
-void SchM_25MS_Task(void)
+void SchM_20Ms_Task(void)
 {
-	LED_TOGGLE(LED3);
 }
 /* Exported functions */
 /* ------------------ */
@@ -158,9 +160,11 @@ void SchM_25MS_Task(void)
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
-void SchM_50MS_Task(void)
+void SchM_40MS_Task(void)
 {
-	LED_TOGGLE(LED2);
+	/*Is call it here because was the task the fix better in the requirements*/
+	/*transitions*/
+	Machine_Call_100ms();	
 }
 /* Exported functions */
 /* ------------------ */
@@ -171,16 +175,7 @@ void SchM_50MS_Task(void)
  *  Return               :
  *  Critical/explanation :    [yes / No]
  **************************************************************/
-void SchM_100MS_Task(void)
+void SchM_80MS_Task(void)
 {
-	LED_TOGGLE(LED1);
-	/*static T_UWORD rub_U16Counter = 0;
-    
-    rub_U16Counter++;
-    
-    if (rub_U16Counter == 10)
-    {
-    	LED_TOGGLE(LED1);
-    	rub_U16Counter = 0;	
-    }*/
+
 }
