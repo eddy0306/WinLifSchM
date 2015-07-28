@@ -65,9 +65,9 @@ int main(void)
     /* Enable External Interrupts*/
     enableIrq();
 	/* Infinite loop */
-	//Init Window Lifter module
+	/*Init Window Lifter module*/
 	InitWindowLifter();
-	//init del scheduler
+	/*init del scheduler*/
     SchM_Init(&SchConfig);
     SchM_Start();
 	for (;;) 

@@ -26,8 +26,6 @@
 /* Includes */
 /* -------- */
 #include "Anti-Pinch.h"
-//#include "typedefs.h"
-//#include "Button.h"
 
 /* Functions macros, constants, types and datas         */
 /* ---------------------------------------------------- */
@@ -111,15 +109,24 @@ enum direction
  
  T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction )
  {
+ 	T_UBYTE lub_option_return;
  	if( lp_button.PushButton( lp_button.channel ) )
 	{
-		if( lub_direction == CLOSED )
+		if( lub_direction == (T_UBYTE)CLOSED )
 		{
-			return PRESSED;
+			lub_option_return = (T_UBYTE)PRESSED;
 		}
 		else
-			return NON_PRESSED;
+		{
+			lub_option_return = (T_UBYTE)NON_PRESSED;	
+		}
 	}
 	else
-		return NON_PRESSED;
+	{
+		lub_option_return = (T_UBYTE)NON_PRESSED;	
+	}
+	
+	return lub_option_return;
+	
  }
+ 

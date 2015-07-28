@@ -82,3 +82,39 @@ extern T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction );
 #endif
 
 
+
+
+/* LONG and STRUCTURE constants */
+
+
+
+/*======================================================*/ 
+/* Definition of RAM variables                          */
+/*======================================================*/ 
+/* BYTES */
+
+
+/* WORDS */
+
+
+/* LONGS and STRUCTURES */
+
+
+/*======================================================*/ 
+/* close variable declaration sections                  */
+/*======================================================*/ 
+
+/* Exported functions prototypes and macros */
+/* ---------------------------------------- */
+
+/* Functions prototypes */
+extern T_UBYTE Anti_Pinch(Button lp_button, T_UBYTE lub_direction );
+/* Functions macros */
+
+
+/* Exported defines */
+
+
+#endif
+
+
